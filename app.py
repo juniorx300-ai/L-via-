@@ -55,13 +55,27 @@ def telegram_webhook():
 
     chat_id = chat["id"]
 
+    historico = conversation_history.setdefault(chat_id, [])
+
+    historico.append({
+        "role": "user",
+        "content": text,
+    })
+
     try:
         response = client.responses.create(
             model="gpt-5.6-luna",
             instructions=SYSTEM_PROMPT,
-            input=text,
+            input=historico,
         )
+
         reply = response.output_text.strip() or "Hmm... me deu um branco agora 😂"
+
+        historico.append({
+            "role": "assistant",
+            "content": reply,
+        })
+
     except Exception:
         reply = "Ops 😅 tive um probleminha para pensar agora. Tenta me mandar de novo?"
 
