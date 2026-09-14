@@ -39,6 +39,21 @@ def remember_if_important(text):
         if gosto:
             add_memory("gosta_de", gosto)
 
+    if texto.startswith("eu amo "):
+        gosto = text[len("eu amo "):].strip()
+        if gosto:
+            add_memory("gosta_de", gosto)
+
+    if texto.startswith("eu curto "):
+        gosto = text[len("eu curto "):].strip()
+        if gosto:
+            add_memory("gosta_de", gosto)
+
+    if texto.startswith("eu odeio "):
+        odeio = text[len("eu odeio "):].strip()
+        if odeio:
+            add_memory("nao_gosta_de", odeio)
+
 memory = load_memory()
 
 TELEGRAM_TOKEN = os.environ["TELEGRAM_BOT_TOKEN"]
