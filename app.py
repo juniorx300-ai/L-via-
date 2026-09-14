@@ -41,30 +41,47 @@ def add_memory(key, value):
 def remember_if_important(text):
     texto = text.lower().strip()
 
-    if texto.startswith("eu gosto de "):
-        gosto = text[len("eu gosto de "):].strip()
-        if gosto:
-            add_memory("gosta_de", gosto)
+    # Coisas que o usuário gosta
+    frases_gosta = [
+        "eu gosto de ",
+        "eu gosto muito de ",
+        "eu adoro ",
+        "eu amo ",
+        "eu curto ",
+        "eu sou fã de ",
+        "meu favorito é ",
+        "minha favorita é ",
+    ]
 
-    if texto.startswith("eu adoro "):
-        gosto = text[len("eu adoro "):].strip()
-        if gosto:
-            add_memory("gosta_de", gosto)
+    # Coisas que o usuário não gosta
+    frases_nao_gosta = [
+        "eu odeio ",
+        "eu não gosto de ",
+        "eu nao gosto de ",
+        "eu detesto ",
+        "eu não curto ",
+        "eu nao curto ",
+        "eu não gosto muito de ",
+        "eu nao gosto muito de ",
+    ]
 
-    if texto.startswith("eu amo "):
-        gosto = text[len("eu amo "):].strip()
-        if gosto:
-            add_memory("gosta_de", gosto)
+    for frase in frases_gosta:
+        if texto.startswith(frase):
+            valor = text[len(frase):].strip()
 
-    if texto.startswith("eu curto "):
-        gosto = text[len("eu curto "):].strip()
-        if gosto:
-            add_memory("gosta_de", gosto)
+            if valor:
+                add_memory("gosta_de", valor)
 
-    if texto.startswith("eu odeio "):
-        odeio = text[len("eu odeio "):].strip()
-        if odeio:
-            add_memory("nao_gosta_de", odeio)
+            return
+
+    for frase in frases_nao_gosta:
+        if texto.startswith(frase):
+            valor = text[len(frase):].strip()
+
+            if valor:
+                add_memory("nao_gosta_de", valor)
+
+            return
 
 memory = load_memory()
 
