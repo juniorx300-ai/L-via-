@@ -80,6 +80,11 @@ def telegram_webhook():
         if nome:
             add_memory("nome", nome)
 
+    if text.lower().startswith("meu time é "):
+        time = text[len("meu time é "):].strip()
+        if time:
+            add_memory("time", time)
+
     chat_id = chat["id"]
 
     historico = conversation_history.setdefault(chat_id, [])
