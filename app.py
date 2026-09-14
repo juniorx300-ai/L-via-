@@ -1,6 +1,7 @@
 import os
 import requests
 import json
+import tempfile
 from flask import Flask, request, jsonify
 from openai import OpenAI
 
@@ -136,6 +137,31 @@ def telegram_send_message(chat_id, text):
         json={"chat_id": chat_id, "text": text},
         timeout=30,
     )
+def telegram_send_voice(chat_id, text):
+    arquivo = tempfile.NamedTemporaryFile(delete=False, suffix=".ogg")
+    caminho = arquivo.name
+    arquivo.close()
+
+    try:
+        with client.audio.speech.with_streaming_response.create(
+            model="gpt-4o-mini-tts",
+            voice="coral",
+            input=text,
+            instructions="Fale em português do Brasil, de forma natural, simpática e espontânea.",
+            response_format="opus",
+        ) as response:
+            response.stream_to_file(caminho)
+
+        with open(caminho, "rb") as audio:
+            requests.post(
+                f"{TELEGRAM_API}/sendVoice",
+                data={"chat_id": chat_id},
+                files={"voice": audio},
+                timeout=60,
+            )
+    finally:
+        if os.path.exists(caminho):
+            os.remove(caminho)
 
 def set_webhook():
     if not RENDER_EXTERNAL_HOSTNAME:
@@ -190,12 +216,20 @@ def telegram_webhook():
 
     chat_id = chat["id"]
 
+    if text.strip().lower() == "/voz":
+        telegram_send_voice(
+            chat_id,
+            "Oi, Junior! Aqui é a Lívia. Finalmente chegou a hora de você ouvir a minha voz. 😊"
+        )
+        return jsonify({"ok": True})
+
     historico = conversation_history.setdefault(chat_id, [])
 
     historico.append({
         "role": "user",
         "content": text,
     })
+
     memoria_texto = json.dumps(memory, ensure_ascii=False)
 
     contexto_memoria = f"""
