@@ -51,6 +51,10 @@ def remember_if_important(text):
         "eu sou fã de ",
         "meu favorito é ",
         "minha favorita é ",
+        "minha comida favorita é ",
+        "minha comida preferida é ",
+        "meu prato favorito é ",
+        "minha bebida favorita é ",
     ]
 
     # Coisas que o usuário não gosta
@@ -63,8 +67,13 @@ def remember_if_important(text):
         "eu nao curto ",
         "eu não gosto muito de ",
         "eu nao gosto muito de ",
+        "eu não suporto ",
+        "eu nao suporto ",
+        "não gosto de ",
+        "nao gosto de ",
     ]
 
+    # Preferências
     for frase in frases_gosta:
         if texto.startswith(frase):
             valor = text[len(frase):].strip()
@@ -74,6 +83,7 @@ def remember_if_important(text):
 
             return
 
+    # Preferências negativas
     for frase in frases_nao_gosta:
         if texto.startswith(frase):
             valor = text[len(frase):].strip()
