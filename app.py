@@ -166,6 +166,11 @@ def telegram_webhook():
         if nome:
             add_memory("nome", nome)
 
+    if text.lower().startswith("eu me chamo "):
+        nome = text[len("eu me chamo "):].strip()
+        if nome:
+            add_memory("nome", nome)
+
     remember_if_important(text)
 
     if text.lower().startswith("meu time é "):
