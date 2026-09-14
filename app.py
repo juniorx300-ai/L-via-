@@ -23,7 +23,19 @@ def save_memory(memory):
         json.dump(memory, file, ensure_ascii=False, indent=2)
 
 def add_memory(key, value):
-    memory[key] = value
+    if key in ("gosta_de", "nao_gosta_de"):
+        atual = memory.get(key, [])
+
+        if isinstance(atual, str):
+            atual = [atual]
+
+        if value not in atual:
+            atual.append(value)
+
+        memory[key] = atual
+    else:
+        memory[key] = value
+
     save_memory(memory)
 
 def remember_if_important(text):
