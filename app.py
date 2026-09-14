@@ -50,6 +50,8 @@ def remember_if_important(text):
         "eu curto ",
         "eu sou fã de ",
         "meu favorito é ",
+        "meu animal favorito é ",
+        "meu animal preferido é ",
         "minha favorita é ",
         "minha comida favorita é ",
         "minha comida preferida é ",
