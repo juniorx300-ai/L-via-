@@ -4,6 +4,7 @@ from flask import Flask, request, jsonify
 from openai import OpenAI
 
 app = Flask(__name__)
+conversation_history = {}
 
 TELEGRAM_TOKEN = os.environ["TELEGRAM_BOT_TOKEN"]
 OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
