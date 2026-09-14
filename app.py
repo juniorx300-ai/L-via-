@@ -5,6 +5,7 @@ from openai import OpenAI
 
 app = Flask(__name__)
 conversation_history = {}
+MEMORY_FILE = "livia_memory.json"
 
 TELEGRAM_TOKEN = os.environ["TELEGRAM_BOT_TOKEN"]
 OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
