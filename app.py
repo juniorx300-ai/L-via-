@@ -26,6 +26,14 @@ def add_memory(key, value):
     memory[key] = value
     save_memory(memory)
 
+def remember_if_important(text):
+    texto = text.lower().strip()
+
+    if texto.startswith("eu gosto de "):
+        gosto = text[len("eu gosto de "):].strip()
+        if gosto:
+            add_memory("gosta_de", gosto)
+
 memory = load_memory()
 
 TELEGRAM_TOKEN = os.environ["TELEGRAM_BOT_TOKEN"]
@@ -79,6 +87,8 @@ def telegram_webhook():
         nome = text[len("meu nome é "):].strip()
         if nome:
             add_memory("nome", nome)
+
+    remember_if_important(text)
 
     if text.lower().startswith("meu time é "):
         time = text[len("meu time é "):].strip()
