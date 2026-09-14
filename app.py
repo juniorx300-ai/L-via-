@@ -1,11 +1,32 @@
 import os
 import requests
+import json
 from flask import Flask, request, jsonify
 from openai import OpenAI
 
 app = Flask(__name__)
 conversation_history = {}
 MEMORY_FILE = "livia_memory.json"
+def load_memory():
+    if not os.path.exists(MEMORY_FILE):
+        return {}
+
+    try:
+        with open(MEMORY_FILE, "r", encoding="utf-8") as file:
+            return json.load(file)
+    except Exception:
+        return {}
+
+
+def save_memory(memory):
+    with open(MEMORY_FILE, "w", encoding="utf-8") as file:
+        json.dump(memory, file, ensure_ascii=False, indent=2)
+
+def add_memory(key, value):
+    memory[key] = value
+    save_memory(memory)
+
+memory = load_memory()
 
 TELEGRAM_TOKEN = os.environ["TELEGRAM_BOT_TOKEN"]
 OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
@@ -54,6 +75,11 @@ def telegram_webhook():
     if not chat or not text:
         return jsonify({"ok": True})
 
+    if text.lower().startswith("meu nome é "):
+        nome = text[len("meu nome é "):].strip()
+        if nome:
+            add_memory("nome", nome)
+
     chat_id = chat["id"]
 
     historico = conversation_history.setdefault(chat_id, [])
@@ -62,11 +88,16 @@ def telegram_webhook():
         "role": "user",
         "content": text,
     })
+    memoria_texto = json.dumps(memory, ensure_ascii=False)
 
+    contexto_memoria = f"""
+Memórias importantes sobre o usuário:
+{memoria_texto}
+"""
     try:
         response = client.responses.create(
             model="gpt-5.6-luna",
-            instructions=SYSTEM_PROMPT,
+            instructions=SYSTEM_PROMPT + "\n\n" + contexto_memoria,
             input=historico,
         )
 
