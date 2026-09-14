@@ -41,6 +41,23 @@ def add_memory(key, value):
 def remember_if_important(text):
     texto = text.lower().strip()
 
+    # Animal favorito
+    if texto.startswith("meu animal favorito é "):
+        valor = text[len("meu animal favorito é "):].strip()
+
+        if valor:
+            add_memory("animal_favorito", valor)
+
+        return
+
+    if texto.startswith("meu animal preferido é "):
+        valor = text[len("meu animal preferido é "):].strip()
+
+        if valor:
+            add_memory("animal_favorito", valor)
+
+        return
+
     # Coisas que o usuário gosta
     frases_gosta = [
         "eu gosto de ",
