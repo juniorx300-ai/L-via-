@@ -47,6 +47,17 @@ def telegram_webhook():
     update = request.get_json(silent=True) or {}
     message = update.get("message", {})
     chat = message.get("chat", {})
+    chat_id = chat.get("id")
+    text = message.get("text", "").strip()
+
+    if not chat_id or not text:
+        return "ok"
+
+    resposta = "Oi! Sou a Lívia. 😌"
+
+    telegram_send_message(chat_id, resposta)
+
+    return "ok"
     text = message.get("text")
 
     if not chat or not text:
