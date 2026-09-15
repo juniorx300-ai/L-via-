@@ -137,20 +137,35 @@ def telegram_send_message(chat_id, text):
         json={"chat_id": chat_id, "text": text},
         timeout=30,
     )
+ELEVENLABS_API_KEY = os.environ["ELEVENLABS_API_KEY"]
+ELEVENLABS_VOICE_ID = "UZ8QqWVrz7tMdxiglcLh"
+
 def telegram_send_voice(chat_id, text):
-    arquivo = tempfile.NamedTemporaryFile(delete=False, suffix=".ogg")
+    arquivo = tempfile.NamedTemporaryFile(delete=False, suffix=".mp3")
     caminho = arquivo.name
     arquivo.close()
 
     try:
-        with client.audio.speech.with_streaming_response.create(
-            model="gpt-4o-mini-tts",
-            voice="coral",
-            input=text,
-            instructions="Fale em português do Brasil, de forma natural, simpática e espontânea.",
-            response_format="opus",
-        ) as response:
-            response.stream_to_file(caminho)
+        response = requests.post(
+            f"https://api.elevenlabs.io/v1/text-to-speech/{ELEVENLABS_VOICE_ID}",
+            headers={
+                "xi-api-key": ELEVENLABS_API_KEY,
+                "Content-Type": "application/json",
+            },
+            params={
+                "output_format": "mp3_22050_32",
+            },
+            json={
+                "text": text,
+                "model_id": "eleven_multilingual_v2",
+            },
+            timeout=60,
+        )
+
+        response.raise_for_status()
+
+        with open(caminho, "wb") as audio:
+            audio.write(response.content)
 
         with open(caminho, "rb") as audio:
             requests.post(
@@ -158,7 +173,8 @@ def telegram_send_voice(chat_id, text):
                 data={"chat_id": chat_id},
                 files={"voice": audio},
                 timeout=60,
-            )
+            ).raise_for_status()
+
     finally:
         if os.path.exists(caminho):
             os.remove(caminho)
