@@ -267,8 +267,8 @@ Memórias importantes sobre o usuário:
         })
 
         except Exception as e:
-        print(f"ERRO NA OPENAI: {e}", flush=True)
-        reply = "Ops 😅 tive um probleminha para pensar agora. Tenta me mandar de novo?"
+            print(f"ERRO NA OPENAI: {e}", flush=True)
+            reply = "Ops 😅 tive um probleminha para pensar agora. Tenta me mandar de novo?"
 
     telegram_send_message(chat_id, reply)
     telegram_send_voice(chat_id, reply)
