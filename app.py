@@ -270,6 +270,7 @@ Memórias importantes sobre o usuário:
         reply = "Ops 😅 tive um probleminha para pensar agora. Tenta me mandar de novo?"
 
     telegram_send_message(chat_id, reply)
+    telegram_send_voice(chat_id, reply)
     return jsonify({"ok": True})
 
 if __name__ == "__main__":
